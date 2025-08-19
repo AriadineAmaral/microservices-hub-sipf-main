@@ -28,6 +28,19 @@ public class PagamentoService {
     @Autowired
     private PedidoClient pedidoClient;
 
+    @Transactional
+    public void confirmarPagamentoKakfa(Long id){
+
+        Optional<Pagamento> pagamento = repository.findById(id);
+
+        if (pagamento.isEmpty()){
+            throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
+        }
+
+        pagamento.get().setStatus(Status.CONFIRMADO);
+        repository.save(pagamento.get());
+    }
+
     @Transactional(readOnly = true)
     public List<PagamentoDTO> getAll() {
         List<Pagamento> pagamentos = repository.findAll();
